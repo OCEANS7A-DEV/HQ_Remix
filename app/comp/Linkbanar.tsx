@@ -5,7 +5,7 @@ import { LinearProgress } from '@mui/material';
 import '../css/Links.css';
 
 
-const Links = () => {
+const LinkBaner = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(navigation.state === 'loading');
 
@@ -39,4 +39,4 @@ const Links = () => {
   );
 }
 
-export default Links;
+export default LinkBaner;

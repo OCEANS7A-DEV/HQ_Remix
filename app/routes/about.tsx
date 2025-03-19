@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import '../css/about.css'
-import Links from '../comp/Links';
+import LinkBaner from '../comp/Linkbanar';
 
 
 
@@ -43,7 +43,7 @@ export default function AboutPage() {
 
   return (
     <div className="aboutwindow">
-      <Links/>
+      <LinkBaner/>
       <h1>About Page</h1>
       <p>これはAboutページです。</p>
       <p>テスト用ページ</p>

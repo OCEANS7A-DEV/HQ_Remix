@@ -7,7 +7,7 @@ import { useLoaderData, Link, useNavigation } from "@remix-run/react";
 import WordSearch from '../comp/ProductSearchWord';
 import '../css/Receiving.css';
 import ProgressBar from '../comp/ProgressBar';
-import Links from '../comp/Links';
+import LinkBaner from '../comp/Linkbanar';
 
 interface InsertData {
   業者: { value: string; label: string }[];
@@ -242,7 +242,7 @@ export default function ReceivingPage() {
   return (
     <div className="window_area">
       <div>
-        <Links/>
+        <LinkBaner/>
       </div>
       <div className="insertDate">
         <h2>入庫日付</h2>
