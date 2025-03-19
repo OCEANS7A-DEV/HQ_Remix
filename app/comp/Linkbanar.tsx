@@ -24,6 +24,7 @@ const LinkBaner = () => {
         <Link className="link" to="/">トップ</Link>
         <Link className="link" to="/about">アバウト</Link>
         <Link className="link" to="/Receiving_stock">入庫</Link>
+        <Link className="link" to="/process_chack">印刷関係</Link>
       </div>
       
     </div>

@@ -24,7 +24,9 @@
     "nprogress": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-select": "^5.10.1"
+    "react-hot-toast": "^2.5.2",
+    "react-select": "^5.10.1",
+    "react-spinners": "^0.15.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.16.0",

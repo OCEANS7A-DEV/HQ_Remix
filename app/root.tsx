@@ -11,6 +11,7 @@ import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { LinearProgress } from '@mui/material';
 import { useEffect, useState } from "react";
 import "./tailwind.css";
+import { Toaster } from "react-hot-toast";
 
 
 export const meta: MetaFunction = () => {
@@ -43,7 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 
   useEffect(() => {
-    console.log(navigation.state)
+    //console.log(navigation.state)
     if (navigation.state === "loading") {
       setLoading(true);
     } else {
@@ -70,9 +71,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
               zIndex: 100,
             }}
           >
-            <LinearProgress color="primary" sx={{ width: "100%", height: 2, color: "green" }}/>
+            <LinearProgress color="success" sx={{ width: "100%", height: 2 }}/>
           </div>
         )}
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>
