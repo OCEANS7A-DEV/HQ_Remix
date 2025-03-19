@@ -26,12 +26,13 @@
 .insert_area {
   white-space: nowrap;
   display: flex;
-  justify-content:center;
+  /* justify-content:center; */
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 10px; /* 各行の間にスペースを追加 */
 }
 .in-area{
+  
   overflow-x: visible;
   overflow-y: auto;
 }
@@ -116,7 +117,8 @@
 }
 
 .insert_name {
-  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
 }
 
 .insert_quantity {

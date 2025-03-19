@@ -1,16 +1,6 @@
-import type { MetaFunction } from "@remix-run/node";
-import { useNavigation } from "@remix-run/react";
-import { useEffect, useState } from "react";
+
 import LinkBaner from '../comp/Linkbanar';
 
-
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
 
 export default function Index() {
   return (

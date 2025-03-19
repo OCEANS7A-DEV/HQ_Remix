@@ -322,7 +322,7 @@ export default function ReceivingPage() {
       </div>
       <div className="button_area">
         <a className="buttonUnderlineS" type="button" onClick={addNewForm}>
-          　入庫枠追加　
+          入庫枠追加
         </a>
         <a className="buttonUnderlineS" type="button" onClick={handleOpenDialog}>入庫実行＞＞</a>
         <ConfirmDialog

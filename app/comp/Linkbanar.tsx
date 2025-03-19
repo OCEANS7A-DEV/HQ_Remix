@@ -20,15 +20,6 @@ const LinkBaner = () => {
   }, [navigation.state]);
   return(
     <div>
-      <div className="loadarea">
-        {/* <ProgressBar
-          isOpen={loading}
-        /> */}
-        {/* <LinearProgress color="primary" style={{ width: '100%' }} value={50}/> */}
-        {loading && (
-          <LinearProgress color="primary" style={{ width: '100%' }} value={50}/>
-        )}
-      </div>
       <div className="Link-area">
         <Link className="link" to="/">トップ</Link>
         <Link className="link" to="/about">アバウト</Link>
