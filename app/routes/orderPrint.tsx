@@ -1,109 +1,117 @@
-import React, { useEffect, useState } from 'react';
-import { ProcessConfirmationGet, OrderDeadline, orderGet, GASProcessUpdate, QuantityReset, shortageGet } from '../backend/Server_end.ts';
+import { useEffect, useState } from 'react';
+import { ProcessConfirmationGet, GASProcessUpdate } from '../backend/Server_end';
 import '../css/orderPrint.css';
-import { useLocation } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
+import { useSearchParams } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { Print } from '../backend/utils';
 
 
 
 
-export const loader = async () => {
-  // requestからURLを取得し、stateからデータを渡す
-  console.log(typeof window)
-  if (typeof window !== "undefined") {
-    // クライアントサイドでのみ実行されるコード
-    const sessionData = sessionStorage.getItem("printdate");
-    console.log(sessionData)
+
+export const loader = async ({ request }: { request: Request }) => {
+  const url = new URL(request.url);
+  const date = url.searchParams.get("date");
+  const store = url.searchParams.get("store");
+  const rowNum = 19;
+
+  const ordersGet = await ProcessConfirmationGet(date);
+  const storeData = ordersGet.filter(row => row[1] === store)
+  var printData = storeData;
+  const pages = Math.ceil(printData.length / rowNum);
+  const EmptyRow = ['','','','','','','','','','','','']
+  const restrows = (pages * rowNum) - printData.length;
+  for (let i = 0; i < restrows; i++) {
+    printData.push(EmptyRow);
   }
-  return {};
+
+  return printData;
 };
 
 export default function PrintPage() {
-  const location = useLocation();
-  const { PrintData, pages, storenane, nowDate } = location.state || {};
-  console.log(typeof window)
-  //const data = location.state || {};
-  //console.log(data)
-  //const { storename, printData = [], pages: dataPages, NowDate } = location.state || {};
-  //const date = NowDate ? NowDate.replace(/-/g, '/') : '';
-
-  
-
-
+  const loaderData = useLoaderData<typeof loader>();
+  const [searchParams] = useSearchParams();
+  const date = searchParams.get("date") || "";
+  const store = searchParams.get("store") || "";
+  // const dataPages = searchParams.get("pages") || "";
   const [totalAmount, setTotalAmount] = useState(0);
   //const [date, setDate] = useState('');
   const SetRows = 19;
-  const defaultText = '警告 単価の入力がない商品があります';
+  const dataPages = loaderData.length / SetRows;
+  const defaultText = '';
   const [WarningText, setWarningText] = useState(defaultText);
+  const navigate = useNavigate();
 
 
 
-  // useEffect(() => {
-  //   return
-  //   warningSet()
-  //   let resultAmount = 0;
-  //   for (let i = 0; i < printData.length; i++){
-  //     resultAmount += printData[i][9];
-  //   }
-  //   const FormattedDate = sessionStorage.getItem('printdate')
-  //   setDate(FormattedDate.replace(/-/g, '/'))
-  //   setTotalAmount(resultAmount)
-  // },[]);
+  useEffect(() => {
+    warningSet()
+    let resultAmount = 0;
+    for (let i = 0; i < loaderData.length; i++){
+      resultAmount += loaderData[i][9];
+    }
+    //const FormattedDate = sessionStorage.getItem('printdate')
+    //setDate(FormattedDate.replace(/-/g, '/'))
+    setTotalAmount(resultAmount)
+  },[]);
 
-  // const totalResult = (num, price) => {
-  //   let result = '' 
-  //   if(num !== '' && price !== '') {
-  //     let total = num * price
-  //     result = total.toLocaleString('ja-JP');
-  //   }else {
-  //     result = ''
-  //   }
-  //   return result
-  // };
+  const totalResult = (num: string, price: string) => {
+    let result = '' 
+    if(num !== '' && price !== '') {
+      let total = num * price
+      result = total.toLocaleString('ja-JP');
+    }else {
+      result = ''
+    }
+    return result
+  };
 
-  // const hasDecimal = (num: number): boolean => {
-  //   return !Number.isInteger(num);
-  // }
+  const hasDecimal = (num: number): boolean => {
+    return !Number.isInteger(num);
+  }
 
-  // const personalTotalAmount = (num, price, personal) => {
-  //   let result = '';
-  //   if(personal !== '') {
-  //     let personalAmount = (num * price) * 1.1
-  //     let calcError = Math.floor(personalAmount * 10) / 10;
-  //     let roundUp = 0;
-  //     if (hasDecimal(calcError)){
-  //       roundUp = Math.ceil(calcError);
-  //     }else{
-  //       roundUp = calcError
-  //     }
+  const personalTotalAmount = (num: number, price: number, personal: string) => {
+    let result = '';
+    if(personal !== '') {
+      let personalAmount = (num * price) * 1.1
+      let calcError = Math.floor(personalAmount * 10) / 10;
+      let roundUp = 0;
+      if (hasDecimal(calcError)){
+        roundUp = Math.ceil(calcError);
+      }else{
+        roundUp = calcError
+      }
       
-  //     result = `税込¥${roundUp.toLocaleString('ja-JP')}`
-  //   }
-  //   return result
-  // };
+      result = `税込¥${roundUp.toLocaleString('ja-JP')}`
+    }
+    return result
+  };
   
-  // const personalData = (personal) => {
-  //   let result = '';
-  //   if(personal !== '') {
-  //     result = `${personal}様`
-  //   }
-  //   return result
-  // };
+  const personalData = (personal: string) => {
+    let result = '';
+    if(personal !== '') {
+      result = `${personal}様`
+    }
+    return result
+  };
 
-  // const warningSet = () => {
-  //   let NonPriceData = printData.filter(row => row[8] === '' && row[0] !== '');
-  //   if(NonPriceData.length === 0){
-  //     setWarningText('')
-  //   }
-  // }
+  const warningSet = () => {
+    let NonPriceData = loaderData.filter(row => row[8] === '' && row[0] !== '');
+    if(NonPriceData.length !== 0){
+      setWarningText('警告 単価の入力がない商品があります')
+    }
+  }
 
-  // useEffect(() => {   
-  // },[])
+
+  useEffect(() => {
+    Print()
+    GASProcessUpdate('店舗へ', store);
+  },[])
 
 
   return (
     <div className="print-area">
-      {/* <div className="Printwarning">{WarningText}</div>
+      <div className="Printwarning">{WarningText}</div>
       <div className="printData">
         <table className="printData">
           <thead>
@@ -117,7 +125,7 @@ export default function PrintPage() {
             </tr>
             <tr className="storename">
               <th className="print-storename" colSpan="10">
-                <div>{storename}</div>
+                <div>{store}</div>
                 
               </th>
             </tr>
@@ -133,7 +141,7 @@ export default function PrintPage() {
             </tr>
           </thead>
           <tbody>
-            {printData.map((row, index) => (
+            {loaderData.map((row, index) => (
               <>
                 
                 {(index % SetRows === 0 && index > 1) && (
@@ -172,7 +180,7 @@ export default function PrintPage() {
             </>
           </tbody>
         </table>
-      </div> */}
+      </div>
     </div>
   );
 }

@@ -1,10 +1,18 @@
 .check_window{
-  margin-left: 30px;
+  
   display: flex;
   flex-flow: column;
 }
 
-.etc {
+.check_set {
+  display: flex;
+  margin: 5px 10px;
+  white-space: nowrap;
+  align-items: center;
+}
+
+.chack_etc {
+  margin-left: 30px;
   margin-top: 30px;
   display: flex;
 }
@@ -17,6 +25,7 @@
 .check {
   overflow-y: auto;
 }
+
 
 
 .check th, .check td {
@@ -53,7 +62,14 @@
 }
 
 .explanation {
+  white-space: nowrap;
   margin: 10px 10px 10px 0px;
   color: red;
   font-size: 16px;
 }
+
+
+.operation_area {
+  white-space: nowrap;
+}
+

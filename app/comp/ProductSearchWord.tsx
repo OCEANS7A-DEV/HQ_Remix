@@ -37,8 +37,6 @@ export default function WordSearch() {
           検索
         </a>
       </div>
-
-      {/* テーブルを表示 */}
       <div className="search-table">
         <table className="search-data-table">
           <thead>
@@ -50,8 +48,8 @@ export default function WordSearch() {
           <tbody className='datail'>
             {tableData.map((row, index) => (
               <tr key={index}>
-                <td className="scode">{row[1]}</td> {/* 商品コードは配列の2番目の要素 */}
-                <td className="sname">{row[2]}</td> {/* 商品名は配列の3番目の要素 */}
+                <td className="scode">{row[1]}</td>
+                <td className="sname">{row[2]}</td>
               </tr>
             ))}
           </tbody>

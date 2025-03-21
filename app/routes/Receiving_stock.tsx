@@ -40,10 +40,10 @@ const productSearch = (code: number) => {
 export const loader = async () => {
   // データ取得が終わるまで待機
   const list = await ListGet('D2:D','その他一覧');
-    const result = list.map((row) => ({
-      value: row[0],
-      label: row[0]
-    }))
+  const result = list.map((row) => ({
+    value: row[0],
+    label: row[0]
+  }))
   return json(result);
 };
 

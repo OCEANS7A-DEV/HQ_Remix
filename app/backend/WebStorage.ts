@@ -11,7 +11,7 @@ export const localStoreSet = async () => {
 
 export const localVendorSet = async () => {
   const vendorData = await ListGet('D2:D','その他一覧');
-  localStorage.setItem('vendorData', JSON.stringify(vendorData))
+  localStorage.setItem('vendorData', JSON.stringify(vendorData.flat(1)))
 };
 
 export const localStorageSet = async (
@@ -26,7 +26,6 @@ export const PrintDataSet = async (
 ) => {
   sessionStorage.setItem('Printdata', JSON.stringify(data));
   sessionStorage.setItem('Printname', storename);
-
 };
 
 export const searchStr = async (searchword: string) => {
@@ -56,7 +55,7 @@ export const searchStr = async (searchword: string) => {
 export const SelectlocalStoreSet = async () => {
   const storeData = await ListGet('A2:A','その他一覧');
   const options = storeData.map((store: string) => ({
-    value: store,
+    value: store[0],
     label: store,
   }));
   localStorage.setItem('SelectstoreData', JSON.stringify(options))
@@ -64,7 +63,8 @@ export const SelectlocalStoreSet = async () => {
 
 export const ETCDATAGET = async () => {
   const data = await ListGet('A2:H','その他データ');
-  sessionStorage.setItem('EtcData', JSON.stringify(data))
+  sessionStorage.setItem('EtcData',JSON.stringify(data))
+  return data;
 }
 
 

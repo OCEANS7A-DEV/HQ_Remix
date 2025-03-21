@@ -111,6 +111,7 @@
 
 
 .sname {
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;  /* 長いテキストは「...」で省略 */

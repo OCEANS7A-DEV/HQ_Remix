@@ -5,6 +5,9 @@ html {
 body {
   margin: 0;
 }
+h2 {
+  margin: 15px;
+}
 
 #root {
   margin: 0;
@@ -62,4 +65,10 @@ input {
   display: flex;
   width: 100%;
   justify-content: space-around;
+}
+
+@media print {
+  .LinearProgress {
+    display: none;
+  }
 }

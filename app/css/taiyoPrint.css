@@ -2,6 +2,8 @@
   background-color: white;
   max-width: 210mm;
   max-height: 297mm;
+  min-width: 210mm;
+  min-height: 297mm;
 }
 
 

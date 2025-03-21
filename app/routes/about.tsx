@@ -44,9 +44,9 @@ export default function AboutPage() {
   return (
     <div className="aboutwindow">
       <LinkBaner/>
+      
       <h1>About Page</h1>
-      <p>これはAboutページです。</p>
-      <p>テスト用ページ</p>
+      <p>これはテスト用ページです。</p>
 
       <div>{loaderData}</div>
     </div>

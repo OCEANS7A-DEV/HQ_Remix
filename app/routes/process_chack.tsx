@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ProcessConfirmationGet, OrderDeadline, orderGet, GASProcessUpdate, QuantityReset, shortageGet } from '../backend/Server_end.ts';
-import { localStoreSet, PrintDataSet, SelectlocalStoreSet } from '../backend/WebStorage';
+import { ProcessConfirmationGet, OrderDeadline, orderGet, GASProcessUpdate, QuantityReset, shortageGet,kaigisituOrder } from '../backend/Server_end';
+import { localStoreSet, PrintDataSet, SelectlocalStoreSet, ETCDATAGET } from '../backend/WebStorage';
 import Select from 'react-select';
 import '../css/process_check.css';
 import '../css/a_button.css';
@@ -17,12 +17,7 @@ import { useNavigate } from "@remix-run/react";
 import { useLoaderData, Link, useNavigation } from "@remix-run/react";
 
 
-interface SettingProps {
-  setCurrentPage: (page: string) => void;
-  setPrintData: (data: any) => void;
-  setStorename: (name: string) => void;
-  setdataPages: (pagenum: number) => void;
-}
+
 
 
 interface SelectOption {
@@ -46,7 +41,7 @@ const CurrentDate = () => {
 }
 const DateNow = CurrentDate();
 
-export default function HQPage({ setCurrentPage, setPrintData, setStorename, setdataPages }: SettingProps) {
+export default function HQPage() {
   const [checkresult, setCheckResult] = useState([]); // 処理結果を管理する状態
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [storeSelect, setStoreSelect] = useState<SelectOption | null>(null);
@@ -59,12 +54,15 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
   const [VendorList, setVendorList] = useState<SelectOption | null>(null);
   const [AddressList, setAddressList] = useState<SelectOption | null>(null);
 
+  const [orderData, setOrderData] = useState([]);
+
   const [Listload, setListload] = useState(false);
 
   const navigate = useNavigate();
 
   const VendorListGet = async () => {
-    const vendordata = JSON.parse(sessionStorage.getItem('EtcData') ?? '');
+    const vendordata = await ETCDATAGET()
+    //console.log(vendordata)
     const list = vendordata.filter(row => row[1] === "FAX");
     const result = list.map((row) => ({
       value: row[0],
@@ -76,7 +74,7 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
 
 
   const OceanListGet = async () => {
-    const alllist = await JSON.parse(sessionStorage.getItem('EtcData') ?? '');
+    const alllist = await ETCDATAGET()
     const list = alllist.filter(row => row[7] === 'オーシャン');
     const result = list.map((row) => ({
       value: row[0],
@@ -87,16 +85,17 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
   };
 
 
-  const PrintProcessList = async (getdate) => {
-    console.log(getdate)
-    if(getdate === '') {
+  const PrintProcessList = async () => {
+    //sessionStorage.setItem('setDATE',getDate)
+    const setdate = sessionStorage.getItem('setDATE')
+    if(getDate === '') {
       toast.error('取得する日付が入力されていません。')
       return
     }
     setListload(true)
-    const ordersGet = await ProcessConfirmationGet(getdate);
+    const ordersGet = await ProcessConfirmationGet(setdate);
     const storeList = await JSON.parse(localStorage.getItem('storeData') ?? '').flat(1);
-    sessionStorage.setItem('ordersdata',JSON.stringify(ordersGet));
+    setOrderData(ordersGet)
     const store = [...new Set(ordersGet.map(row => row[1]))]
     store.sort((a,b) => {
       return storeList.indexOf(a) - storeList.indexOf(b);
@@ -142,10 +141,17 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
       setSelectOptions(storedatalist);
       await SelectlocalStoreSet(storedatalist);
     }
+    setGetDate(sessionStorage.getItem('setDATE') ?? '');
     getLocalStorageSize();
     VendorListGet();
     OceanListGet();
   },[])
+
+  useEffect(() => {
+    if(getDate !== ''){
+      PrintProcessList()
+    }
+  },[getDate])
 
   useEffect(() =>{
     const resetDate = sessionStorage.getItem('printdate') ?? ''
@@ -169,32 +175,35 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
     setDialogOpen(false);
   };
 
-  const handleOrderPrint = async (storeprintname: string) => {
-    const orderData = await JSON.parse(sessionStorage.getItem('ordersdata') ?? '');
-    sessionStorage.setItem('printdate',getDate);
-    var printData = orderData.filter(row => row[1] == storeprintname);
-    const pages = Math.ceil(printData.length / rowNum);
-    const EmptyRow = ['','','','','','','','','','','','']
-    const restrows = (pages * rowNum) - printData.length;
-    for (let i = 0; i < restrows; i++) {
-      printData.push(EmptyRow);
+  const handleOrderPrint = async () => {
+    //console.log(storeSelect)
+    let storeprintname = '';
+    if (storeSelect){
+      storeprintname = storeSelect.value
     }
-    const dataPages = printData.length / rowNum;
-    // const dataSettings = async () => {
-    //   setdataPages(dataPages)
-    //   setPrintData(printData);
-    //   setStorename(storeprintname);
-    // };
-    //await dataSettings();
-    sessionStorage.setItem('storename',storeprintname);
-    navigate("/orderPrint", {
-      state: { pages: dataPages, 'PrintData': printData, storenane: storeprintname, nowDate: getDate}
-    })
+    //console.log(storeprintname)
+    const setdate = sessionStorage.getItem('setDATE') ?? '';
+    //console.log(setdate)
+    const params = new URLSearchParams();
+    if (setdate !== '' && storeprintname !== '') {
+      params.set("date", setdate);
+      params.set("store", storeprintname);
+      navigate(
+        `/orderPrint?${params.toString()}`
+      )
+    }
+    //console.log(params.toString())
   };
 
   const allPrint = async () => {
     const printstoreList = checkresult.filter(row => row.process == '未印刷' || row.process == '一部未印刷')
+    console.log(checkresult)
+    checkresult.map((row) => {
+      console.log(row.storeName)
+    })
+    return
     printstoreList.map((row) => {
+      
       handleOrderPrint(row.storeName)
     })
     return
@@ -205,37 +214,31 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
       toast.error('業者の選択、もしくは配送先の選択がされていません。')
       return
     }
-    const resultData = await shortageGet();
-    const filterData = resultData.filter(row => row[12] < 0 && row[0] == vendorSelect.value)
-    sessionStorage.setItem('shortageSet', JSON.stringify(filterData))
-    sessionStorage.setItem('shortageVender', vendorSelect.value)
-    await sessionStorage.setItem('AddressSet', addressSelect.value)
-    // if (vendorSelect.value == '大洋商会') {
-    //   await setCurrentPage('TaiyoPrint');
-    // }else if (vendorSelect.value == 'キンバト') {
-    //   await setCurrentPage('KinbatoPrint');
-    // }else if (vendorSelect.value == 'ムラカミ') {
-    //   await setCurrentPage('MurakamiPrint');
-    // }else if (vendorSelect.value == '三久') {
-    //   await setCurrentPage('ThankyouPrint');
-    // }else if (vendorSelect.value == 'タムラ'){
-    //   await setCurrentPage('TamuraPrint');
-    // }
+    const setdate = sessionStorage.getItem('setDATE') ?? '';
+    const Vendorparams = new URLSearchParams();
+    Vendorparams.set("date", setdate);
+    Vendorparams.set("address", addressSelect.value);
+    Vendorparams.set("vendor",vendorSelect.value)
+
+    if (vendorSelect.value == '大洋商会') {
+      navigate(`/taiyo?${Vendorparams.toString()}`);
+    }else if (vendorSelect.value == 'キンバト') {
+      //await setCurrentPage('KinbatoPrint');
+    }else if (vendorSelect.value == 'ムラカミ') {
+      //await setCurrentPage('MurakamiPrint');
+    }else if (vendorSelect.value == '三久') {
+      //await setCurrentPage('ThankyouPrint');
+    }else if (vendorSelect.value == 'タムラ'){
+      //await setCurrentPage('TamuraPrint');
+    }
   }
 
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(navigation.state === 'loading');
 
 
-  useEffect(() => {
-    console.log(navigation.state)
-    if (navigation.state === "loading") {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [navigation.state]);
-
+  const Dateset = (date) => {
+    setGetDate(date)
+    sessionStorage.setItem('setDATE',date)
+  }
 
 
   return (
@@ -243,16 +246,16 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
       <div className="banner">
         <LinkBaner/>
       </div>
-      <div className="etc">
+      <div className="chack_etc">
         <div className="check_area">
-          <div>
-            <button type="button" onClick={() => PrintProcessList(getDate)}>取得</button>
+          <div className="check_set">
+            <button type="button" onClick={() => PrintProcessList()}>取得</button>
             <input
               type="date"
               className="insert_order_date"
               max="9999-12-31"
               value={getDate}
-              onChange={(e) => setGetDate(e.target.value)}
+              onChange={(e) => Dateset(e.target.value)}
             />
           </div>
           {/* テーブルを表示 */}
@@ -312,7 +315,7 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
                   options={selectOptions}
                 />
               </div>
-              <a className="buttonUnderline" type="button" onClick={() => handleOrderPrint(storeSelect.value)}>
+              <a className="buttonUnderline" type="button" onClick={() => handleOrderPrint()}>
                 個別印刷
               </a>
               <a className="buttonUnderline" type="button" onClick={allPrint}>
@@ -329,8 +332,8 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
                   value={vendorSelect}
                   onChange={(e) => setVendorSelect(e)}
                   options={VendorList}
-                  menuPlacement="auto"
-                  menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                  // menuPlacement="auto"
+                  // menuPortalTarget={typeof document !== "undefined" ? document.body : null}
                 />
               </div>
               <div>
@@ -341,8 +344,8 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
                   value={addressSelect}
                   onChange={(e) => setAdoressSelect(e)}
                   options={AddressList}
-                  menuPlacement="auto"
-                  menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                  // menuPlacement="auto"
+                  // menuPortalTarget={typeof document !== "undefined" ? document.body : null}
                 />
               </div>
               <a className="buttonUnderline" type="button" onClick={VendorPrint}>
@@ -352,7 +355,6 @@ export default function HQPage({ setCurrentPage, setPrintData, setStorename, set
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

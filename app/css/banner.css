@@ -1,15 +1,16 @@
-.banner-area {
+.Link-area {
   display: flex;
-  width: calc(100dvw - 20px);
-  width: 950px;
+  width: 100%;
+  padding: 10px 0px;
   background-color: white;
   justify-content: space-around;
+  white-space: nowrap;
 }
 
 
 
 @media print {
-  .banner-area {
+  .Link-area {
     display: none;
   }
 }

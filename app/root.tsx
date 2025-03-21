@@ -18,7 +18,7 @@ export const meta: MetaFunction = () => {
   return [
     { name: "emotion-insertion-point", content: "" },
     { charset: "utf-8" },
-    { title: "New Remix App" },
+    { title: "本部在庫管理" },
     { name: "description", content: "Welcome to Remix!" },
     { name: "viewport", content: "width=device-width, initial-scale=1" }
   ];
@@ -44,7 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 
   useEffect(() => {
-    //console.log(navigation.state)
+    console.log(navigation.state)
     if (navigation.state === "loading") {
       setLoading(true);
     } else {
@@ -63,6 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         {loading && (
           <div
+            className="LinearProgress"
             style={{
               position: "fixed",
               top: 0,
