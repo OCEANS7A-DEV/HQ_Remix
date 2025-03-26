@@ -1,0 +1,49 @@
+.shortagePrintArea{
+  margin: 20px;
+}
+
+.shortagePrintTitle {
+  text-align: left;
+  background-color: whitesmoke;
+}
+
+.shortageTable, .detailTable {
+  border-collapse: collapse;
+  background-color: #f5f5f5;
+}
+
+.shortageHead, .detailHead {
+  background-color: #c0c0c0;
+}
+
+.shortageTable th, .shortageTable td, .detailTable th,.detailTable td {
+  padding: 8px 10px;
+  border: 1px solid black;
+  white-space: nowrap;
+}
+
+.shortageTable tr:nth-child(even) {
+  background-color: #dcdcdc; /* 偶数行の背景色を変更 */
+}
+
+.detailTable tr:nth-child(even) {
+  background-color: #dcdcdc; /* 偶数行の背景色を変更 */
+}
+
+.detailnums {
+  width: 40px;
+  text-align: right;
+}
+
+
+
+
+@media print {
+  @page {
+    size: A4 portrait;
+  }
+  body {
+    zoom: 1;
+  }
+  
+}

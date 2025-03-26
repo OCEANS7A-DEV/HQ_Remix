@@ -8,6 +8,7 @@ import WordSearch from '../comp/ProductSearchWord';
 import '../css/Receiving.css';
 import ProgressBar from '../comp/ProgressBar';
 import LinkBaner from '../comp/Linkbanar';
+import toast from 'react-hot-toast';
 
 interface InsertData {
   業者: { value: string; label: string }[];
@@ -217,6 +218,10 @@ export default function ReceivingPage() {
   };
 
   const handleOpenDialog = () => {
+    if (Date === ''){
+      toast.error('日付が入力されていません。')
+      return
+    }
     setDialogOpen(true);
   };
 

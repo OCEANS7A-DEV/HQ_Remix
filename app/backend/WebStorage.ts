@@ -1,5 +1,5 @@
 import { stockList, ListGet } from '../backend/Server_end';
-import * as jaconv from 'jaconv';
+import jaconv from 'jaconv';
 
 
 export default function main(){}
@@ -38,6 +38,7 @@ export const searchStr = async (searchword: string) => {
     return [];
   }
   const result = data.filter((item: any[]) => {
+    const productCode = item[1]
     const productName = item[2];
     if (typeof productName !== 'string') {
       console.log('商品名が文字列ではありません:', productName);
@@ -46,7 +47,8 @@ export const searchStr = async (searchword: string) => {
     return (
       productName.indexOf(swKZ) !== -1 ||
       productName.indexOf(swKH) !== -1 ||
-      productName.indexOf(swHZ) !== -1
+      productName.indexOf(swHZ) !== -1 ||
+      productCode.indexOf(searchword) !== -1
     );
   });
   return result;

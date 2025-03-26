@@ -148,13 +148,10 @@ export const ProcessConfirmationGet = async (
       .slice(1) // ヘッダー行を除外
       .filter((row: any) => {
         const utcDate = new Date(row[0]); // UTC 時間で Date オブジェクトを作成
-
         // 日本時間に変換
         const japanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // UTC+9 時間を加算
-
         // yyyy-mm-dd 形式に変換
         const formattedJapanDate = japanTime.toISOString().split('T')[0];
-
         // 'date' との比較
         return formattedJapanDate === date;
       });
@@ -415,6 +412,30 @@ export const shortageGet = async () => {
       },
       body: JSON.stringify({
         sheetName: '在庫一覧',
+        action: 'allDataNum',
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const result = await response.json();
+    //console.log(result)
+    return result;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
+export const detailGet = async () => {
+  try {
+    const response = await fetch(Get_URL, {
+      method: 'POST',
+      headers: {
+        "Content-Type" : "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify({
+        sheetName: '商品詳細集計',
         action: 'allDataNum',
       })
     });

@@ -202,11 +202,11 @@ export default function HQPage() {
       console.log(row.storeName)
     })
     return
-    printstoreList.map((row) => {
+    // printstoreList.map((row) => {
       
-      handleOrderPrint(row.storeName)
-    })
-    return
+    //   handleOrderPrint(row.storeName)
+    // })
+    // return
   };
 
   const VendorPrint = async () => {
@@ -231,6 +231,28 @@ export default function HQPage() {
     }else if (vendorSelect.value == 'タムラ'){
       //await setCurrentPage('TamuraPrint');
     }
+  }
+
+  const detailPrint = () => {
+    const setdate = sessionStorage.getItem('setDATE') ?? '';
+    if(setdate === '') {
+      toast.error('取得する日付が入力されていません。')
+      return
+    }
+    const Orderparams = new URLSearchParams();
+    Orderparams.set("date", setdate);
+    navigate(`/detailPrint?${Orderparams.toString()}`)
+  }
+
+  const datalistElseCasePrint = () => {
+    const setdate = sessionStorage.getItem('setDATE') ?? '';
+    if(setdate === '') {
+      toast.error('取得する日付が入力されていません。')
+      return
+    }
+    const Orderparams = new URLSearchParams();
+    Orderparams.set("date", setdate);
+    navigate(`/elsecasePrint?${Orderparams.toString()}`)
   }
 
 
@@ -350,6 +372,17 @@ export default function HQPage() {
               </div>
               <a className="buttonUnderline" type="button" onClick={VendorPrint}>
                 業者発注印刷
+              </a>
+            </div>
+            <div className="shortage-print">
+              <a className="buttonUnderline" type="button" onClick={() => navigate('/shortagePrint')}>
+                ネット発注分印刷
+              </a>
+              <a className="buttonUnderline" type="button" onClick={() => detailPrint()}>
+                詳細印刷
+              </a>
+              <a className="buttonUnderline" type="button" onClick={() => datalistElseCasePrint()}>
+                商品一覧外印刷
               </a>
             </div>
           </div>

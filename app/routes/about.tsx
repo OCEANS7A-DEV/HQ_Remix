@@ -11,24 +11,26 @@ import LinkBaner from '../comp/Linkbanar';
 export const AllData = async(
 ) => {
   try {
-    const response = await fetch(
-      Get_URL,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'allData',
-          sheetName: '在庫一覧',
-        })
+    const response = await fetch(Get_URL, {
+      method: 'POST',
+      headers: {
+        "Content-Type" : "application/x-www-form-urlencoded",
       },
-    );
+      body: JSON.stringify({
+        sheetName: '在庫一覧',
+        action: 'allDataNum',
+      })
+    });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     const result = await response.json();
-    return result;
-
-  }catch(e){
-    return (e);
+    const filter = result.filter(row => row[12] < 0)
+    //console.log(result)
+    return filter;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
   }
 };
 
@@ -48,7 +50,19 @@ export default function AboutPage() {
       <h1>About Page</h1>
       <p>これはテスト用ページです。</p>
 
-      <div>{loaderData}</div>
+      {/* <div>{loaderData}</div> */}
+      <table>
+        <tbody>
+          {loaderData.map((row,index) => (
+            <tr key={index}>
+              <td>{row[0]}</td>
+              <td>{row[1]}</td>
+              <td>{row[2]}</td>
+              <td>{row[12]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

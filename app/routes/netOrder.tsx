@@ -8,7 +8,6 @@ import '../css/netOrder.css';
 
 export const loader = async() => {
   const URLs = await ListGet('A2:B','ネット発注');
-
   return URLs;
 };
 
