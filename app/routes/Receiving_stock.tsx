@@ -69,7 +69,7 @@ export default function ReceivingPage() {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const message = "入庫内容は以下の通りです\n以下の内容でよろしければOKをクリックしてください\n内容の変更がある場合にはキャンセルをクリックしてください";
   const VendorList = useLoaderData<typeof loader>();
-  const [Date, setDate] = useState<string>('');
+  const [insertDate, setDate] = useState<string>('');
 
 
 
@@ -158,7 +158,7 @@ export default function ReceivingPage() {
     const formResult = [];
     for (let i = 0; i < filterData.length; i++){
       let setData = [
-        Date,
+        insertDate,
         filterData[i].業者.value,
         filterData[i].商品コード,
         filterData[i].商品名,
@@ -218,7 +218,7 @@ export default function ReceivingPage() {
   };
 
   const handleOpenDialog = () => {
-    if (Date === ''){
+    if (insertDate === ''){
       toast.error('日付が入力されていません。')
       return
     }
@@ -241,6 +241,15 @@ export default function ReceivingPage() {
     setDate(event.target.value)
   };
 
+  useEffect(() => {
+    const today = new Date();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
+    const formattedDate = `${today.getFullYear()}-${month}-${day}`;
+    setDate(formattedDate);
+  }, [])
+  
+
 
 
 
@@ -254,7 +263,7 @@ export default function ReceivingPage() {
         <input
         type="date"
         className="insert_date"
-        value={Date}
+        value={insertDate}
         onChange={(e) => handleChangeDate(e)}
       />
       </div>

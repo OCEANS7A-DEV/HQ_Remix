@@ -1,7 +1,7 @@
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { shortageGet, ListGet } from '../backend/Server_end';
 import LinkBaner from '../comp/Linkbanar';
-import { TableRow } from "@mui/material";
+//import { TableRow } from "@mui/material";
 import '../css/shortagePrint.css';
 import { useEffect } from 'react';
 import { Print } from '../backend/utils'
@@ -24,7 +24,7 @@ export default function ShortagePrint() {
 
   useEffect (() => {
     Print()
-    //navigate('/process_chack')
+    navigate('/process_chack')
   },[])
 
   return (
