@@ -156,6 +156,11 @@ export default function ReceivingPage() {
   const insertPost = async () => {
     const filterData = formData.filter(row => row.商品コード !== "");
     const formResult = [];
+    const checklist = filterData.filter(row => row.数量 === '' || row.商品単価 === '')
+    if(checklist.length !== 0){
+      toast.error('数量、もしくは商品単価の入力がないものがあります')
+      return
+    }
     for (let i = 0; i < filterData.length; i++){
       let setData = [
         selectDate,

@@ -86,14 +86,12 @@ export default function HQPage() {
 
 
   const PrintProcessList = async () => {
-    //sessionStorage.setItem('setDATE',getDate)
-    const setdate = sessionStorage.getItem('setDATE')
     if(getDate === '') {
       toast.error('取得する日付が入力されていません。')
       return
     }
     setListload(true)
-    const ordersGet = await ProcessConfirmationGet(setdate);
+    const ordersGet = await ProcessConfirmationGet(getDate);
     const storeList = await JSON.parse(localStorage.getItem('storeData') ?? '').flat(1);
     setOrderData(ordersGet)
     const store = [...new Set(ordersGet.map(row => row[1]))]
@@ -167,12 +165,14 @@ export default function HQPage() {
   },[])
 
   useEffect(() => {
-    if (getDate === ''){
-      const today = new Date()
-      const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).padStart(2, "0")}-${(today.getDate()).padStart(2, "0")}`;
-      setGetDate(formattedDate)
+    const setdate = sessionStorage.getItem('setDATE') ?? ''
+    if (setdate === '') {
+      const today = new Date();
+      const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      setGetDate(formattedDate);
     }
-  },[])
+  }, []);
+  
 
 
 
