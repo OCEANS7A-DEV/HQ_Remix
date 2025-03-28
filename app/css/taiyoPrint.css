@@ -228,11 +228,20 @@
   font-weight: bold;
 }
 
-
-.tamura-manager {
+.tamura-manager-area {
+  margin-left: 10px;
   font-size: 25px;
-  margin-left: 20px;
   padding: 2px 5px;
   border: 1px solid black;
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+}
+.tamura-manager {
+  font-size: 35px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 

@@ -24,7 +24,7 @@ export default function ShortagePrint() {
 
   useEffect (() => {
     Print()
-    //navigate('/process_chack')
+    navigate('/process_chack')
   },[])
 
   return (
@@ -33,7 +33,6 @@ export default function ShortagePrint() {
         <LinkBaner/>
       </div>
       <div className="shortagePrintArea">
-        
         <table className="shortageTable">
           <thead className="shortageHead">
             <tr>

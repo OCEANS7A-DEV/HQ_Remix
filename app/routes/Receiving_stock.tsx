@@ -69,7 +69,7 @@ export default function ReceivingPage() {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const message = "入庫内容は以下の通りです\n以下の内容でよろしければOKをクリックしてください\n内容の変更がある場合にはキャンセルをクリックしてください";
   const VendorList = useLoaderData<typeof loader>();
-  const [Date, setDate] = useState<string>('');
+  const [selectDate, setDate] = useState<string>('');
 
 
 
@@ -241,6 +241,13 @@ export default function ReceivingPage() {
     setDate(event.target.value)
   };
 
+  useEffect(() => {
+    const utcDate = new Date();
+    const japanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+    const formattedJapanDate = japanTime.toISOString().split('T')[0];
+    setDate(formattedJapanDate)
+  },[])
+
 
 
 
@@ -254,7 +261,7 @@ export default function ReceivingPage() {
         <input
         type="date"
         className="insert_date"
-        value={Date}
+        value={selectDate}
         onChange={(e) => handleChangeDate(e)}
       />
       </div>

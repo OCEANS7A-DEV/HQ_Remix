@@ -158,6 +158,11 @@ export default function HQPage() {
     if(resetDate !== ''){
       setGetDate(resetDate);
       PrintProcessList(resetDate);
+    }else{
+      const utcDate = new Date();
+      const japanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+      const formattedJapanDate = japanTime.toISOString().split('T')[0];
+      setGetDate(formattedJapanDate)
     }
   },[])
 
@@ -222,15 +227,21 @@ export default function HQPage() {
 
     if (vendorSelect.value == '大洋商会') {
       navigate(`/taiyo?${Vendorparams.toString()}`);
-    }else if (vendorSelect.value == 'キンバト') {
-      //await setCurrentPage('KinbatoPrint');
-    }else if (vendorSelect.value == 'ムラカミ') {
-      //await setCurrentPage('MurakamiPrint');
-    }else if (vendorSelect.value == '三久') {
-      //await setCurrentPage('ThankyouPrint');
-    }else if (vendorSelect.value == 'タムラ'){
-      //await setCurrentPage('TamuraPrint');
+    }else{
+      navigate(`/etcPrint?${Vendorparams.toString()}`);
     }
+
+    // if (vendorSelect.value == '大洋商会') {
+    //   navigate(`/taiyo?${Vendorparams.toString()}`);
+    // }else if (vendorSelect.value == 'キンバト') {
+    //   //await setCurrentPage('KinbatoPrint');
+    // }else if (vendorSelect.value == 'ムラカミ') {
+    //   //await setCurrentPage('MurakamiPrint');
+    // }else if (vendorSelect.value == '三久') {
+    //   //await setCurrentPage('ThankyouPrint');
+    // }else if (vendorSelect.value == 'タムラ'){
+    //   //await setCurrentPage('TamuraPrint');
+    // }
   }
 
   const detailPrint = () => {

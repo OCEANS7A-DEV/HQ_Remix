@@ -38,7 +38,7 @@ export const searchStr = async (searchword: string) => {
     return [];
   }
   const result = data.filter((item: any[]) => {
-    const productCode = item[1]
+    const productCode = String(item[1])
     const productName = item[2];
     if (typeof productName !== 'string') {
       console.log('商品名が文字列ではありません:', productName);
