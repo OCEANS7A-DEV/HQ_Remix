@@ -4,11 +4,12 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build",
+    "build": "remix build",
     "dev": "remix vite:dev --port 5000",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc",
+    "predeploy": "remix build && touch public/.nojekyll",
     "deploy": "gh-pages -d public"
   },
   "dependencies": {
@@ -52,7 +53,5 @@
   "engines": {
     "node": ">=20.0.0"
   },
-
   "homepage": "https://OCEANS7A-DEV.github.io/HQ_Remix/"
-
 }

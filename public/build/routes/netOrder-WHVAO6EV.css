@@ -1,0 +1,1 @@
+.Link-area{display:flex;width:100%;padding:10px 0;background-color:#fff;justify-content:space-around;white-space:nowrap}@media print{.Link-area{display:none}}.NetOrderLinkTitle{margin:10px 20px}.NetOrderLinkTable{margin-left:10px;border-collapse:collapse}.NetOrderLinkArea th,.NetOrderLinkArea td{padding:5px 10px;border:1px solid black}

@@ -2,7 +2,7 @@
 module.exports = {
   future: {},
   ignoredRouteFiles: ["**/.*"],
-  server: false, // 👈 これで静的ビルドにする
+  server: false,
   serverBuildPath: "build/index.js",
   appDirectory: "app",
   assetsBuildDirectory: "public/build",
