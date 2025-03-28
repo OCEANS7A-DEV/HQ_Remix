@@ -158,7 +158,7 @@ export default function ReceivingPage() {
     const formResult = [];
     for (let i = 0; i < filterData.length; i++){
       let setData = [
-        insertDate,
+        selectDate,
         filterData[i].業者.value,
         filterData[i].商品コード,
         filterData[i].商品名,
@@ -218,7 +218,7 @@ export default function ReceivingPage() {
   };
 
   const handleOpenDialog = () => {
-    if (insertDate === ''){
+    if (selectDate === ''){
       toast.error('日付が入力されていません。')
       return
     }
@@ -241,6 +241,13 @@ export default function ReceivingPage() {
     setDate(event.target.value)
   };
 
+  useEffect(() => {
+    const utcDate = new Date();
+    const japanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+    const formattedJapanDate = japanTime.toISOString().split('T')[0];
+    setDate(formattedJapanDate)
+  },[])
+
 
 
 
@@ -254,7 +261,7 @@ export default function ReceivingPage() {
         <input
         type="date"
         className="insert_date"
-        value={Date}
+        value={selectDate}
         onChange={(e) => handleChangeDate(e)}
       />
       </div>
