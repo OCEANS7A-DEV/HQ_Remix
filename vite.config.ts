@@ -21,4 +21,8 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  server: {
+    host: '0.0.0.0',  // 外部アクセスを許可する設定
+    port: 5000,       // ポートを設定
+  }
 });

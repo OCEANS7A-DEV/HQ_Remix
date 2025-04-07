@@ -189,37 +189,45 @@ export default function HQPage() {
   };
 
   const handleOrderPrint = async () => {
-    //console.log(storeSelect)
+    console.log(storeSelect)
     let storeprintname = '';
     if (storeSelect){
       storeprintname = storeSelect.value
     }
-    //console.log(storeprintname)
-    const setdate = sessionStorage.getItem('setDATE') ?? '';
-    //console.log(setdate)
-    const params = new URLSearchParams();
-    if (setdate !== '' && storeprintname !== '') {
-      params.set("date", setdate);
-      params.set("store", storeprintname);
+
+    console.log(getDate)
+    
+    if (getDate !== '' && storeprintname !== '') {
+      const setStore = [storeprintname]
+      const params = new URLSearchParams();
+      params.set("date", getDate);
+      setStore.forEach(store => {
+        params.append("store", store);
+      });
       navigate(
         `/orderPrint?${params.toString()}`
       )
     }
-    //console.log(params.toString())
+  };
+
+  const handleOrderPrintAll = async (setStore:any) => {
+    const params = new URLSearchParams();
+    if (getDate !== '' ) {
+      params.set("date", getDate);
+      setStore.forEach(store => {
+        params.append("store", store);
+      });
+      
+      await navigate(
+        `/orderPrint?${params.toString()}`
+      )
+    }
   };
 
   const allPrint = async () => {
     const printstoreList = checkresult.filter(row => row.process == '未印刷' || row.process == '一部未印刷')
-    console.log(checkresult)
-    checkresult.map((row) => {
-      console.log(row.storeName)
-    })
-    return
-    // printstoreList.map((row) => {
-      
-    //   handleOrderPrint(row.storeName)
-    // })
-    // return
+    const stores = printstoreList.map(item => item.storeName)
+    handleOrderPrintAll(stores);
   };
 
   const VendorPrint = async () => {
@@ -227,7 +235,7 @@ export default function HQPage() {
       toast.error('業者の選択、もしくは配送先の選択がされていません。')
       return
     }
-    const setdate = sessionStorage.getItem('setDATE') ?? '';
+    const setdate = getDate
     const Vendorparams = new URLSearchParams();
     Vendorparams.set("date", setdate);
     Vendorparams.set("address", addressSelect.value);
@@ -254,23 +262,23 @@ export default function HQPage() {
 
   const detailPrint = () => {
     const setdate = sessionStorage.getItem('setDATE') ?? '';
-    if(setdate === '') {
+    if(getDate === '') {
       toast.error('取得する日付が入力されていません。')
       return
     }
     const Orderparams = new URLSearchParams();
-    Orderparams.set("date", setdate);
+    Orderparams.set("date", getDate);
     navigate(`/detailPrint?${Orderparams.toString()}`)
   }
 
   const datalistElseCasePrint = () => {
     const setdate = sessionStorage.getItem('setDATE') ?? '';
-    if(setdate === '') {
+    if(getDate === '') {
       toast.error('取得する日付が入力されていません。')
       return
     }
     const Orderparams = new URLSearchParams();
-    Orderparams.set("date", setdate);
+    Orderparams.set("date", getDate);
     navigate(`/elsecasePrint?${Orderparams.toString()}`)
   }
 

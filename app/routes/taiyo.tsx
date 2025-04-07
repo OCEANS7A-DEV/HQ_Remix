@@ -11,6 +11,7 @@ export const loader = async ({ request }: { request: Request }) => {
   const date = url.searchParams.get("date");
   const vendor = url.searchParams.get("vendor");
   const address = url.searchParams.get("address");
+  //console.log(url)
 
   if(address !== '会議室'){
     const resultData = await shortageGet();
@@ -20,9 +21,13 @@ export const loader = async ({ request }: { request: Request }) => {
         let shortageNum = Number(filterd[i][12]);
         let num = 0;
         if (filterd[i][11] !== "" && Number(filterd[i][11]) > 0) {
+          let up = Number(filterd[i][11])
+          if(filterd[i][1] == 2002){
+            up = up * 2
+          }
           while (shortageNum < 0) {
-            shortageNum += Number(filterd[i][11])
-            num += Number(filterd[i][11])
+            shortageNum += up
+            num += up
           }
           result.push(['', filterd[i][2], num, '', '', ''])
         } else {
@@ -33,13 +38,15 @@ export const loader = async ({ request }: { request: Request }) => {
   }else{
     const productdata = await stockList();
     const data = await kaigisituOrder();
+    //console.log(data)
     const filterdate = new Date(date)
     filterdate.setHours(filterdate.getHours() - 9)
     const datefilter = data.filter(row => new Date(row[0]).toLocaleString() === filterdate.toLocaleString())
-
+    //console.log(datefilter)
     const filter = datefilter.filter(row => row[2] == '大洋商会' || row[2] == '大洋')
     for (let i = 0; i < filter.length; i++){
       let matchdata = productdata.filter(row => row[1] == filter[i][3])
+      //console.log(matchdata)
       let count = 0;
       let num = 0;
       while (num < filter[i][6]) {

@@ -26,7 +26,7 @@ export const loader =  async ({ request }: { request: Request }) => {
 
 
   const data = await shortageGet()
-  const filtered = data.filter((row) => row[0] === vendor && row[12] < 0)
+  const filtered = data.filter((row) => row[0] === vendor && (row[12] < 0 || (Number(row[14]) >= 1 && Number(row[12]) <= Number(row[14]))))
 
   let resultData = []
   let subData = []
@@ -35,15 +35,22 @@ export const loader =  async ({ request }: { request: Request }) => {
 
 
   if(vendor === '三久'){
+    //console.log(data.filter((row) => row[0] === vendor && row[12] < 0 ))
     resultData = filtered.map(items => {
+      //console.log(items)
       if(items[11] !== ''){
         let shortage = items[12];
         let orderNum = 0
         let ordernumCount = Number(items[11])
-        while (shortage < 0){
-          shortage += ordernumCount
+        if(shortage < 0){
+          while (shortage < 0){
+            shortage += ordernumCount
+            orderNum += ordernumCount
+          }
+        }else{
           orderNum += ordernumCount
         }
+        
         return [items[2],orderNum]
       }else{
         return [items[2], -(items[12])]
@@ -102,9 +109,11 @@ export const loader =  async ({ request }: { request: Request }) => {
     subdata = [...new Set(filteredData.map(items => items[1]))]
     subData = filteredData
     let returndata = []
+    
     if (data){
       for (let i = 0; i < data.length; i++){
-        if(data[i][1] !== 100001){
+        if(data[i][1] !== 100001 && data[i][0] === vendor && data[i][12] < 0){
+          //console.log(data[i])
           let shortageNum = Number(data[i][11]);
           let num = 0;
           if (data[i][11] !== "" || Number(data[i][11]) > 0) {
@@ -117,6 +126,8 @@ export const loader =  async ({ request }: { request: Request }) => {
         }
       }
     }
+    //console.log(returndata)
+    resultData = returndata
     //const resultdata = returndata.filter(row => !row[0].includes('ﾙﾍﾞﾙ'))
   }
 

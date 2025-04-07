@@ -1,0 +1,55 @@
+
+> start
+> cross-env PORT=5000 remix-serve ./build/server/index.js
+
+[remix-serve] http://localhost:5000 (http://192.168.0.43:5000)
+Error: No route matches URL "/app/routes/_index.tsx"
+    at getInternalRouterError (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\router\router.ts:5550:5)
+    at Object.query (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\router\router.ts:3562:19)
+    at handleDocumentRequest (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\server-runtime\dist\server.js:313:35)
+    at requestHandler (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\server-runtime\dist\server.js:170:24)
+    at C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\express\dist\server.js:41:28
+ErrorResponseImpl {
+  status: 404,
+  statusText: 'Not Found',
+  internal: true,
+  data: 'Error: No route matches URL "/app/routes/_index.tsx"',
+  error: Error: No route matches URL "/app/routes/_index.tsx"
+      at getInternalRouterError (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\router\router.ts:5550:5)
+      at Object.query (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\router\router.ts:3562:19)
+      at handleDocumentRequest (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\server-runtime\dist\server.js:313:35)
+      at requestHandler (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\server-runtime\dist\server.js:170:24)
+      at C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\@remix-run\express\dist\server.js:41:28
+}
+GET /app/routes/_index.tsx?import 404 - - 118.530 ms
+GET / 200 - - 16.806 ms
+GET /netOrder 200 - - 1565.926 ms
+GET /__manifest?p=%2F&p=%2FHQ_Stocks&p=%2FReceiving_stock&p=%2FnetOrder&p=%2Fprocess_chack&p=%2Fservice&version=901cad02 200 - - 5.108 ms
+GET /Receiving_stock.data 200 - - 1402.957 ms
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.
+    at Xc (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:77:77)
+    at Z (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:78:89)
+    at Yc (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:81:98)
+    at $c (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:80:140)
+    at Z (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:78:345)
+    at Yc (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:81:98)
+    at Xc (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:73:145)
+    at Z (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:78:89)
+    at Yc (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:81:98)
+    at $c (C:\Users\user-1\Desktop\VSCode\my-remix-app\node_modules\react-dom\cjs\react-dom-server.node.production.min.js:80:140)
+[Error: Unexpected Server Error]
+GET /Receiving_stock 500 - - 1719.182 ms
+GET /__manifest?p=%2FnetOrder&version=901cad02 200 - - 1.749 ms
+GET /netOrder.data - - - - ms
+GET / 200 - - 13.118 ms
+GET /__manifest?p=%2ForderPrint&version=901cad02 200 - - 1.327 ms
+GET /orderPrint.data?date=2025-04-07&store=%E4%B8%89%E5%8E%9F 200 - - 4626.766 ms
+GET /orderPrint.data?date=2025-04-07&store=%E5%BB%BF%E6%97%A5%E5%B8%82 200 - - 4793.113 ms
+GET /orderPrint.data?date=2025-04-07&store=%E3%83%8F%E3%82%A4%E3%82%AB%E3%83%A9 200 - - 4403.715 ms
+GET /orderPrint.data?date=2025-04-07&store=%E7%B5%86 200 - - 6812.135 ms
+GET /orderPrint.data?date=2025-04-07&store=%E5%BA%9C%E4%B8%AD 200 - - 4984.625 ms
+GET /orderPrint.data?date=2025-04-07&store=%E4%BA%94%E6%97%A5%E5%B8%82 200 - - 4798.160 ms
+GET /orderPrint.data?date=2025-04-07&store=%E4%B8%AD%E5%A4%AE 200 - - 4965.430 ms
+GET /__manifest?p=%2Ftaiyo&version=901cad02 200 - - 1.916 ms
+GET /taiyo.data?date=&address=%E4%BC%9A%E8%AD%B0%E5%AE%A4&vendor=%E5%A4%A7%E6%B4%8B%E5%95%86%E4%BC%9A 200 - - 10314.843 ms
+^C

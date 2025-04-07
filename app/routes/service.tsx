@@ -17,20 +17,11 @@ import SweetAlert2 from 'react-sweetalert2';
 
 
 
-{/* <ConfirmDialogTable
-          title="確認"
-          message={message}
-          tableData={formData}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-          isOpen={isDialogOpen}
-        /> */}
 interface InsertData {
   業者: { value: string; label: string }[];
   商品コード: string;
   商品名: string;
   数量: string;
-  商品単価: string;
   VendorList: { value: string; label: string }[];
 }
 
@@ -43,7 +34,6 @@ interface InventoryDataType {
   業者: string;
   商品コード: string;
   商品名: string;
-  商品単価: string;
 }
 
 const productSearch = (code: number) => {
@@ -66,19 +56,18 @@ export const loader = async () => {
 
 const fieldDataList = ['業者', '商品コード', '商品名', '数量', '商品単価'];
 
-export default function ReceivingPage() {
+export default function ServicePage() {
   const initialRowCount = 20;
   const initialFormData = Array.from({ length: initialRowCount }, () => ({
     業者: [],
     商品コード: '',
     商品名: '',
     数量: '',
-    商品単価: '',
     VendorList: []
   }));
   const [formData, setFormData] = useState<InsertData[]>(initialFormData);
   const [productData, setProductData] = useState<InventoryDataType[]>([
-    {業者: '', 商品コード: '', 商品名: '', 商品単価: ''}])
+    {業者: '', 商品コード: '', 商品名: ''}])
   const codeRefs = useRef([]);
   const quantityRefs = useRef([]);
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -93,12 +82,7 @@ export default function ReceivingPage() {
     setSwalProps({
       show: true,
       title: 'Example',
-      onConfirm: () => {
-        setSwalProps({ show: false })
-        insertPost()
-        alert('確認が完了しました');
-        setFormData(initialFormData);
-        }, // アラートを閉じたらリセット
+      onConfirm: () => setSwalProps({ show: false }), // アラートを閉じたらリセット
       onDismiss: () => setSwalProps({ show: false }), // ESCキーや外部クリックでもリセット
     }); 
   }
@@ -185,7 +169,7 @@ export default function ReceivingPage() {
   const insertPost = async () => {
     const filterData = formData.filter(row => row.商品コード !== "");
     const formResult = [];
-    const checklist = filterData.filter(row => row.数量 === '' || row.商品単価 === '')
+    const checklist = filterData.filter(row => row.数量 === '' )
     if(checklist.length !== 0){
       toast.error('数量、もしくは商品単価の入力がないものがあります')
       return
@@ -197,12 +181,10 @@ export default function ReceivingPage() {
         filterData[i].商品コード,
         filterData[i].商品名,
         filterData[i].数量,
-        filterData[i].商品単価,
-        '=SUM(INDIRECT("E"&ROW()) * INDIRECT("F"&ROW()))'
       ]
       formResult.push(setData);
     }
-    await GASPostInsert('insert', '本部入庫', formResult);
+    await GASPostInsert('insert', 'サービス品入庫', formResult);
   };
 
   const removeForm = (index: number) => {
@@ -352,15 +334,7 @@ export default function ReceivingPage() {
               onChange={(e) => numberchange(index, '数量', e)}
               onKeyDown={(e) => handleKeyDown(index, e, '数量')}
             />
-            <input
-              type="text"
-              pattern="^[0-9]+$"
-              placeholder="商品単価"
-              className="insert_price"
-              inputMode="numeric"
-              value={data.商品単価}
-              onChange={(e) => numberchange(index, '商品単価', e)}
-            />
+            
             <button type="button" className="delete_button" onClick={() => removeForm(index)}>
               削除
             </button>
@@ -390,4 +364,3 @@ export default function ReceivingPage() {
     </div>
   );
 }
-

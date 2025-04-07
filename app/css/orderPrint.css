@@ -203,4 +203,8 @@
   body {
     zoom: 1;
   }
+  .special-row, .no-break {
+    page-break-inside: avoid;
+    break-inside: avoid; /* 一部ブラウザ用 */
+  }
 }

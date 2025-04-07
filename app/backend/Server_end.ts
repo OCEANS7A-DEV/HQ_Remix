@@ -451,3 +451,33 @@ export const detailGet = async () => {
   }
 };
 
+
+export const AllClearCells = async () => {
+  try {
+    const response = await fetch(
+      URL_STRING,
+      {
+        method: 'POST',
+        headers: {
+          "Content-Type" : "application/x-www-form-urlencoded",
+        },
+        body: JSON.stringify({
+          sub_action: 'get',
+          action: 'allclear',
+          sheetName: '在庫一覧',
+        })
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const result = await response.json();
+    return result;
+
+  }catch(e){
+    return (e);
+  }
+}
+
+
+

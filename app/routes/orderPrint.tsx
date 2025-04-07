@@ -12,27 +12,33 @@ import { Print } from '../backend/utils';
 export const loader = async ({ request }: { request: Request }) => {
   const url = new URL(request.url);
   const date = url.searchParams.get("date");
-  const store = url.searchParams.get("store");
+  const store = url.searchParams.getAll("store");
   const rowNum = 19;
 
-  const ordersGet = await ProcessConfirmationGet(date);
-  const storeData = ordersGet.filter(row => row[1] === store)
-  var printData = storeData;
-  const pages = Math.ceil(printData.length / rowNum);
-  const EmptyRow = ['','','','','','','','','','','','']
-  const restrows = (pages * rowNum) - printData.length;
-  for (let i = 0; i < restrows; i++) {
-    printData.push(EmptyRow);
-  }
+  const resultdata = await Promise.all(
+    store.map(async (storeName) => {
+      const ordersGet = await ProcessConfirmationGet(date);
+      const storeData = ordersGet.filter(row => row[1] === storeName);
+      let printData = storeData;
+      const pages = Math.ceil(printData.length / rowNum);
+      const EmptyRow = ['', '', '', '', '', '', '', '', '', '', '', ''];
+      const restrows = (pages * rowNum) - printData.length;
+      for (let i = 0; i < restrows; i++) {
+        printData.push(EmptyRow);
+      }
+      return printData;
+    })
+  );
 
-  return printData;
+  return resultdata; // ← これで Promise[] ではなく、データ配列[] が返る
 };
+
 
 export default function PrintPage() {
   const loaderData = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const date = searchParams.get("date") || "";
-  const store = searchParams.get("store") || "";
+  const store = searchParams.getAll("store");
   // const dataPages = searchParams.get("pages") || "";
   const [totalAmount, setTotalAmount] = useState(0);
   //const [date, setDate] = useState('');
@@ -41,19 +47,25 @@ export default function PrintPage() {
   const defaultText = '';
   const [WarningText, setWarningText] = useState(defaultText);
   const navigate = useNavigate();
+  //console.log(loaderData)
 
 
 
   useEffect(() => {
     warningSet()
     let resultAmount = 0;
-    for (let i = 0; i < loaderData.length; i++){
-      resultAmount += loaderData[i][9];
-    }
+    
+    // for (let i = 0; i < loaderData.length; i++){
+    //   resultAmount += loaderData[i][9];
+    // }
     //const FormattedDate = sessionStorage.getItem('printdate')
     //setDate(FormattedDate.replace(/-/g, '/'))
     setTotalAmount(resultAmount)
   },[]);
+
+  const storeTotalResult = (data) => {
+    return data.reduce((sum, row) => sum + (Number(row[9]) || 0), 0);
+  }
 
   const totalResult = (num: string, price: string) => {
     let result = '' 
@@ -105,6 +117,7 @@ export default function PrintPage() {
 
   useEffect(() => {
     Print()
+    navigate('/process_chack')
     GASProcessUpdate('店舗へ', store);
   },[])
 
@@ -113,73 +126,74 @@ export default function PrintPage() {
     <div className="print-area">
       <div className="Printwarning">{WarningText}</div>
       <div className="printData">
-        <table className="printData">
-          <thead>
-            <tr>
-              <th colSpan="10">
-                <div className="printDate">
-                  <div className="print-date">発注日:　{date}</div>
-                  <div className="print-title">納品書</div>
-                </div>
-              </th>
-            </tr>
-            <tr className="storename">
-              <th className="print-storename" colSpan="10">
-                <div>{store}</div>
-                
-              </th>
-            </tr>
-            <tr className="print-table-header">
-              <th>商品ナンバー・商品名</th>
-              <th>商品詳細</th>
-              <th>注文数</th>
-              <th>単価</th>
-              <th>合計金額</th>
-              <th>個人購入</th>
-              <th>個人税込</th>
-              <th>備考</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loaderData.map((row, index) => (
+        {store.map((storerow,storeindex) => (
+          <table className="printData" key={storeindex}>
+            <thead>
+              <tr>
+                <th colSpan="10">
+                  <div className="printDate">
+                    <div className="print-date">発注日:　{date}</div>
+                    <div className="print-title">納品書</div>
+                  </div>
+                </th>
+              </tr>
+              <tr className="storename">
+                <th className="print-storename" colSpan="10">
+                  <div>{storerow}</div>
+                  
+                </th>
+              </tr>
+              <tr className="print-table-header">
+                <th>商品ナンバー・商品名</th>
+                <th>商品詳細</th>
+                <th>注文数</th>
+                <th>単価</th>
+                <th>合計金額</th>
+                <th>個人購入</th>
+                <th>個人税込</th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loaderData[storeindex].map((row, index) => (
+                <>
+                  {(index % SetRows === 0 && index > 1) && (
+                    <>
+                      <tr key={`condition`}>
+                        <td colSpan="10" className="special-row no-break">
+                          {index/SetRows}/{loaderData[storeindex].length / SetRows}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                  <tr key={index} className="special-row no-break">
+                    <td>
+                      <div className="P-code">{row[3]}</div>
+                      <div className="P-name">{row[4]}</div>
+                    </td>
+                    <td className="P-detail">{row[5]}</td>
+                    <td className="P-number">{row[6]}</td>
+                    <td className="P-price">{row[8].toLocaleString('ja-JP')}</td>
+                    <td className="P-totalprice">{totalResult(row[6],row[8])}</td>
+                    <td className="P-personal">{personalData(row[10])}</td>
+                    <td className="P-personal-taxin">{personalTotalAmount(row[6],row[8],row[10])}</td>
+                    <td className="P-remarks">{row[11]}</td>
+                  </tr>
+                </>
+              ))}
               <>
-                
-                {(index % SetRows === 0 && index > 1) && (
-                  <>
-                    <tr key={`condition`}>
-                      <td colSpan="10" className="special-row">
-                        {index/SetRows}/{dataPages}
-                      </td>
-                    </tr>
-                  </>
-                )}
-                <tr key={index}>
-                  <td>
-                    <div className="P-code">{row[3]}</div>
-                    <div className="P-name">{row[4]}</div>
+                <tr key="last-condition" className="special-row no-break">
+                  <td colSpan="11" className="special-row">
+                    <div className="last-row">
+                      <div className="last-page-data">{loaderData[storeindex].length / SetRows}/{loaderData[storeindex].length / SetRows}</div>
+                      <div className="last-page-amount">税抜注文合計金額(個人購入・欠品分含む): ¥{Number(storeTotalResult(loaderData[storeindex])).toLocaleString('ja-JP')}</div>
+                    </div>
                   </td>
-                  <td className="P-detail">{row[5]}</td>
-                  <td className="P-number">{row[6]}</td>
-                  <td className="P-price">{row[8].toLocaleString('ja-JP')}</td>
-                  <td className="P-totalprice">{totalResult(row[6],row[8])}</td>
-                  <td className="P-personal">{personalData(row[10])}</td>
-                  <td className="P-personal-taxin">{personalTotalAmount(row[6],row[8],row[10])}</td>
-                  <td className="P-remarks">{row[11]}</td>
                 </tr>
               </>
-            ))}
-            <>
-              <tr key="last-condition">
-                <td colSpan="11" className="special-row">
-                  <div className="last-row">
-                    <div className="last-page-data">{dataPages}/{dataPages}</div>
-                    <div className="last-page-amount">税抜注文合計金額(個人購入・欠品分含む): ¥{Number(totalAmount).toLocaleString('ja-JP')}</div>
-                  </div>
-                </td>
-              </tr>
-            </>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        ))}
       </div>
     </div>
   );
